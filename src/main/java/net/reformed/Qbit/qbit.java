@@ -1,12 +1,18 @@
 package net.reformed.Qbit;
 
 import com.mojang.logging.LogUtils;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.EventBus;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.reformed.Qbit.block.ModBlocks;
+import net.reformed.Qbit.item.ModItems;
 import org.slf4j.Logger;
 
 @Mod(qbit.MOD_ID)
@@ -19,7 +25,17 @@ public class qbit
 
     public qbit(FMLJavaModLoadingContext context)
     {
+        IEventBus modEventBus = context.getModEventBus();
+        modEventBus.addListener(this::commonSetup);
 
+        MinecraftForge.EVENT_BUS.register(this);
+
+        ModBlocks.Register(modEventBus);
+        ModItems.register(modEventBus);
+
+
+        // Register the item to a creative tab
+        modEventBus.addListener(this::addCreative);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
